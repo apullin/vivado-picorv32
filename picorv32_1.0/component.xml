@@ -23,7 +23,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>POLARITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI_RST.POLARITY">ACTIVE_LOW</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI_RST.POLARITY" spirit:choiceRef="choice_list_9d8b0d81">ACTIVE_LOW</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -46,10 +46,6 @@
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI_CLK.ASSOCIATED_BUSIF">M_AXI</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI_CLK.ASSOCIATED_RESET">resetn</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -132,6 +128,28 @@
           </xilinx:enablement>
         </xilinx:busInterfaceInfo>
       </spirit:vendorExtensions>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>irq</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>INTERRUPT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>irq</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>SENSITIVITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.IRQ.SENSITIVITY" spirit:choiceRef="choice_list_99a1d2b9">LEVEL_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
       <spirit:name>M_AXI</spirit:name>
@@ -278,25 +296,13 @@
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
-      <spirit:parameters>
-        <spirit:parameter>
-          <spirit:name>ADDR_WIDTH</spirit:name>
-          <spirit:description>ADDR Width (bits)</spirit:description>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI.ADDR_WIDTH">32</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>DATA_WIDTH</spirit:name>
-          <spirit:description>DATA Width (bits)</spirit:description>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI.DATA_WIDTH">32</spirit:value>
-        </spirit:parameter>
-      </spirit:parameters>
     </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:addressSpaces>
     <spirit:addressSpace>
       <spirit:name>M_AXI</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="dependent" spirit:dependency="pow(2,31+1)" spirit:minimum="0" spirit:maximum="4294967296" spirit:rangeType="long">4294967296</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_DATA_WIDTH&apos;)) - 1) + 1">32</spirit:width>
+      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">4294967296</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
     </spirit:addressSpace>
   </spirit:addressSpaces>
   <spirit:model>
@@ -313,7 +319,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>4bf1d05b</spirit:value>
+            <spirit:value>c4d09d32</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -329,7 +335,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>4bf1d05b</spirit:value>
+            <spirit:value>c4d09d32</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -343,7 +349,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f8b10a1a</spirit:value>
+            <spirit:value>1ae3a8b5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -357,7 +363,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>45a2f450</spirit:value>
+            <spirit:value>16328387</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1006,7 +1012,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>PROGADDR_RESET</spirit:name>
         <spirit:displayName>Progaddr Reset</spirit:displayName>
-        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.PROGADDR_RESET" spirit:bitStringLength="32">0x40000000</spirit:value>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.PROGADDR_RESET" spirit:bitStringLength="32">0x00000000</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>PROGADDR_IRQ</spirit:name>
@@ -1016,17 +1022,31 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>STACKADDR</spirit:name>
         <spirit:displayName>Stackaddr</spirit:displayName>
-        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.STACKADDR" spirit:bitStringLength="32">0x40000FFF</spirit:value>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.STACKADDR" spirit:bitStringLength="32">0xFFFFFFFF</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
+  <spirit:choices>
+    <spirit:choice>
+      <spirit:name>choice_list_99a1d2b9</spirit:name>
+      <spirit:enumeration>LEVEL_HIGH</spirit:enumeration>
+      <spirit:enumeration>LEVEL_LOW</spirit:enumeration>
+      <spirit:enumeration>EDGE_RISING</spirit:enumeration>
+      <spirit:enumeration>EDGE_FALLING</spirit:enumeration>
+    </spirit:choice>
+    <spirit:choice>
+      <spirit:name>choice_list_9d8b0d81</spirit:name>
+      <spirit:enumeration>ACTIVE_HIGH</spirit:enumeration>
+      <spirit:enumeration>ACTIVE_LOW</spirit:enumeration>
+    </spirit:choice>
+  </spirit:choices>
   <spirit:fileSets>
     <spirit:fileSet>
       <spirit:name>xilinx_verilogsynthesis_view_fileset</spirit:name>
       <spirit:file>
         <spirit:name>src/picorv32.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_4bf1d05b</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_c4d09d32</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1041,7 +1061,7 @@
       <spirit:file>
         <spirit:name>xgui/picorv32_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f8b10a1a</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1ae3a8b5</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1172,7 +1192,7 @@
     <spirit:parameter>
       <spirit:name>PROGADDR_RESET</spirit:name>
       <spirit:displayName>Program Reset Address</spirit:displayName>
-      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.PROGADDR_RESET" spirit:bitStringLength="32">0x40000000</spirit:value>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.PROGADDR_RESET" spirit:bitStringLength="32">0x00000000</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>PROGADDR_IRQ</spirit:name>
@@ -1182,7 +1202,7 @@
     <spirit:parameter>
       <spirit:name>STACKADDR</spirit:name>
       <spirit:displayName>Stack Address</spirit:displayName>
-      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.STACKADDR" spirit:bitStringLength="32">0x40000FFF</spirit:value>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.STACKADDR" spirit:bitStringLength="32">0xFFFFFFFF</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1208,24 +1228,79 @@
       <xilinx:displayName>PicoRV32 RISC-V Core</xilinx:displayName>
       <xilinx:vendorDisplayName>Clifford Wolf</xilinx:vendorDisplayName>
       <xilinx:vendorURL>https://github.com/cliffordwolf/picorv32</xilinx:vendorURL>
-      <xilinx:coreRevision>5</xilinx:coreRevision>
+      <xilinx:coreRevision>11</xilinx:coreRevision>
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>user.org:user:picorv32:1.0</xilinx:canUpgradeFrom>
         <xilinx:canUpgradeFrom>clifford_wolff:user:picorv32:1.0</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2017-01-22T00:16:50Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2021-05-21T06:26:22Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="clifford.at:user:picorv32:1.0_ARCHIVE_LOCATION">/home/oguz286/Projects/FPGA/RISCV/test/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7bf6b79b_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67199a77_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e7575b3_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54d44f33_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4130764_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@111c860d_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15e74a96_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@fc06f23_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36fb6b87_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67f4f8_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@493bd7f4_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14b060af_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@130a3acc_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cc878ea_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49bf5d8b_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4384966a_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@783e8492_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ca84718_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@69b3148_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@709ccf6e_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@56f93db7_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c85a8f1_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@402edbb_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@cb7d274_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@b953948_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@170d2eb7_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@27d3846d_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c3fe2f9_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6043399d_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7112f51d_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7347b070_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26c063f5_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a655c70_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16709e70_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@501aec89_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@534980ac_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23c32de5_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@373e2392_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5be6be88_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4092e889_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@257ca8da_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45c08bad_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@401d2e39_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36758a87_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7704cc0d_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5884b859_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6d5e354e_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@202b0b51_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@bccd2f9_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2acf0911_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54822cc8_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4ae69924_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37a2acb2_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5467b628_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@109c7ab7_ARCHIVE_LOCATION">c:/Users/pullin/fpga/vivado-picorv32/picorv32_1.0</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2016.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="b1a760f2"/>
-      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="857d9d2f"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7873b075"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="6e0b0f19"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="936232a9"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="5ef81769"/>
+      <xilinx:xilinxVersion>2020.2.2</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="9ae0ce7a"/>
+      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="fa820a90"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="83c4b6cb"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="e71f0017"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="71b5cf08"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="84cb8639"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

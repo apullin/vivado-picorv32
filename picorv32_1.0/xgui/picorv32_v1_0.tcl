@@ -1,81 +1,31 @@
 # Definitional proc to organize widgets for parameters.
 proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "Component_Name"
-  #Adding Group
-  set Addresses [ipgui::add_group $IPINST -name "Addresses" -layout horizontal]
-  set PROGADDR_RESET [ipgui::add_param $IPINST -name "PROGADDR_RESET" -parent ${Addresses}]
-  set_property tooltip {The start address of the program.} ${PROGADDR_RESET}
-  set STACKADDR [ipgui::add_param $IPINST -name "STACKADDR" -parent ${Addresses}]
-  set_property tooltip {When this parameter has a value different from 0xffffffff, then register x2 (the stack pointer) is initialized to this value on reset. (All other registers remain uninitialized.) Note that the RISC-V calling convention requires the stack pointer to be aligned on 16 bytes boundaries (4 bytes for the RV32I soft float calling convention).} ${STACKADDR}
-
-  #Adding Group
-  set Timer [ipgui::add_group $IPINST -name "Timer" -display_name {Counters} -layout horizontal]
-  set_property tooltip {Counters} ${Timer}
-  set ENABLE_COUNTERS [ipgui::add_param $IPINST -name "ENABLE_COUNTERS" -parent ${Timer}]
-  set_property tooltip {Enables support for the RDCYCLE[H], RDTIME[H], and RDINSTRET[H] instructions. This instructions will cause a hardware trap (like any other unsupported instruction) if ENABLE_COUNTERS is set to zero.} ${ENABLE_COUNTERS}
-  set ENABLE_COUNTERS64 [ipgui::add_param $IPINST -name "ENABLE_COUNTERS64" -parent ${Timer}]
-  set_property tooltip {Enables support for the RDCYCLEH, RDTIMEH, and RDINSTRETH instructions. If this parameter is set to 0, and ENABLE_COUNTERS is set to 1, then only the RDCYCLE, RDTIME, and RDINSTRET instructions are available.} ${ENABLE_COUNTERS64}
-
-  #Adding Group
-  set Basic [ipgui::add_group $IPINST -name "Basic" -display_name {Performance}]
-  set_property tooltip {These settings affect the performance and maximum clock frequency of the core.} ${Basic}
-  set ENABLE_REGS_16_31 [ipgui::add_param $IPINST -name "ENABLE_REGS_16_31" -parent ${Basic}]
-  set_property tooltip {Enables support for registers the x16..x31. The RV32E ISA excludes this registers. However, the RV32E ISA spec requires a hardware trap for when code tries to access this registers. This is not implemented in PicoRV32.} ${ENABLE_REGS_16_31}
-  set TWO_CYCLE_ALU [ipgui::add_param $IPINST -name "TWO_CYCLE_ALU" -parent ${Basic}]
-  set_property tooltip {This adds an additional FF stage in the ALU data path, improving timing at the cost of an additional clock cycle for all instructions that use the ALU.  Note: Enabling this parameter will be most effective when retiming (aka "register balancing") is enabled in the synthesis flow.} ${TWO_CYCLE_ALU}
-  set TWO_CYCLE_COMPARE [ipgui::add_param $IPINST -name "TWO_CYCLE_COMPARE" -parent ${Basic}]
-  set_property tooltip {This relaxes the longest data path a bit by adding an additional FF stage at the cost of adding an additional clock cycle delay to the conditional branch instructions.  Note: Enabling this parameter will be most effective when retiming (aka "register balancing") is enabled in the synthesis flow.} ${TWO_CYCLE_COMPARE}
-  set BARREL_SHIFTER [ipgui::add_param $IPINST -name "BARREL_SHIFTER" -parent ${Basic}]
-  set_property tooltip {By default shift operations are performed by successively shifting by a small amount (see Two Stage Shift above). With this option set, a barrel shifter is used instead.} ${BARREL_SHIFTER}
-  set TWO_STAGE_SHIFT [ipgui::add_param $IPINST -name "TWO_STAGE_SHIFT" -parent ${Basic}]
-  set_property tooltip {By default shift operations are performed in two stages: first shifts in units of 4 bits and then shifts in units of 1 bit. This speeds up shift operations, but adds additional hardware. Set this parameter to 0 to disable the two-stage shift to further reduce the size of the core.} ${TWO_STAGE_SHIFT}
-  set ENABLE_REGS_DUALPORT [ipgui::add_param $IPINST -name "ENABLE_REGS_DUALPORT" -parent ${Basic}]
-  set_property tooltip {The register file can be implemented with two or one read ports. A dual ported register file improves performance a bit, but can also increase the size of the core.} ${ENABLE_REGS_DUALPORT}
-  set COMPRESSED_ISA [ipgui::add_param $IPINST -name "COMPRESSED_ISA" -parent ${Basic}]
-  set_property tooltip {This enables support for the RISC-V Compressed Instruction Set.} ${COMPRESSED_ISA}
-
-  #Adding Group
-  set Error_Trapping [ipgui::add_group $IPINST -name "Error Trapping" -layout horizontal]
-  set_property tooltip {Enables trapping when an error occurs.} ${Error_Trapping}
-  set CATCH_MISALIGN [ipgui::add_param $IPINST -name "CATCH_MISALIGN" -parent ${Error_Trapping}]
-  set_property tooltip {Deselect this to disable the circuitry for catching misaligned memory accesses.} ${CATCH_MISALIGN}
-  set CATCH_ILLINSN [ipgui::add_param $IPINST -name "CATCH_ILLINSN" -parent ${Error_Trapping}]
-  set_property tooltip {Disable this to disable the circuitry for catching illegal instructions. The core will still trap on EBREAK instructions with this option disabled. With IRQs enabled, an EBREAK normally triggers an IRQ 1. With this option disabled, an EBREAK will trap the processor without triggering an interrupt.} ${CATCH_ILLINSN}
-
-  #Adding Group
-  set PCPI_Interface [ipgui::add_group $IPINST -name "PCPI Interface"]
-  set_property tooltip {These settings are related to the optional PicoRV Co-Processor Interface.} ${PCPI_Interface}
-  set ENABLE_PCPI [ipgui::add_param $IPINST -name "ENABLE_PCPI" -parent ${PCPI_Interface}]
-  set_property tooltip {Select this to enable the Pico Co-Processor Interface (PCPI).} ${ENABLE_PCPI}
-  set ENABLE_MUL [ipgui::add_param $IPINST -name "ENABLE_MUL" -parent ${PCPI_Interface}]
-  set_property tooltip {This parameter internally enables PCPI and instantiates the picorv32_pcpi_mul core that implements the MUL[H[SU|U]] instructions. The external PCPI interface only becomes functional when Enable PCPI is set as well.} ${ENABLE_MUL}
-  set ENABLE_FAST_MUL [ipgui::add_param $IPINST -name "ENABLE_FAST_MUL" -parent ${PCPI_Interface}]
-  set_property tooltip {This parameter internally enables PCPI and instantiates the picorv32_pcpi_fast_mul core that implements the MUL[H[SU|U]] instructions. The external PCPI interface only becomes functional when Enable PCPI is set as well. If both Enable Multiplier and Enable Fast Multiplier are set then the Enable Multiplier setting will be ignored and the fast multiplier core will be instantiated.} ${ENABLE_FAST_MUL}
-  set ENABLE_DIV [ipgui::add_param $IPINST -name "ENABLE_DIV" -parent ${PCPI_Interface}]
-  set_property tooltip {This parameter internally enables PCPI and instantiates the picorv32_pcpi_div core that implements the DIV[U]/REM[U] instructions. The external PCPI interface only becomes functional when Enable PCPI is set as well.} ${ENABLE_DIV}
-
-  #Adding Group
-  set IRQ [ipgui::add_group $IPINST -name "IRQ"]
-  set ENABLE_IRQ [ipgui::add_param $IPINST -name "ENABLE_IRQ" -parent ${IRQ}]
-  set_property tooltip {Select this to enable IRQs.} ${ENABLE_IRQ}
-  set ENABLE_IRQ_QREGS [ipgui::add_param $IPINST -name "ENABLE_IRQ_QREGS" -parent ${IRQ}]
-  set_property tooltip {Deselect this to disable support for the getq and setq instructions. Without the q-registers, the irq return address will be stored in x3 (gp) and the IRQ bitmask in x4 (tp), the global pointer and thread pointer registers according to the RISC-V ABI. Code generated from ordinary C code will not interact with those registers. Support for q-registers is always disabled when Enable IRQ is set to 0.} ${ENABLE_IRQ_QREGS}
-  set ENABLE_IRQ_TIMER [ipgui::add_param $IPINST -name "ENABLE_IRQ_TIMER" -parent ${IRQ}]
-  set_property tooltip {Deselect this to disable support for the timer instruction. Support for the timer is always disabled when Enable IRQ is set to 0.} ${ENABLE_IRQ_TIMER}
-  set PROGADDR_IRQ [ipgui::add_param $IPINST -name "PROGADDR_IRQ" -parent ${IRQ}]
-  set_property tooltip {The start address of the interrupt handler.} ${PROGADDR_IRQ}
-  set MASKED_IRQ [ipgui::add_param $IPINST -name "MASKED_IRQ" -parent ${IRQ}]
-  set_property tooltip {A 1 bit in this bitmask corresponds to a permanently disabled IRQ.} ${MASKED_IRQ}
-  set LATCHED_IRQ [ipgui::add_param $IPINST -name "LATCHED_IRQ" -parent ${IRQ}]
-  set_property tooltip {A 1 bit in this bitmask indicates that the corresponding IRQ is "latched", i.e. when the IRQ line is high for only one cycle, the interrupt will be marked as pending and stay pending until the interrupt handler is called (aka "pulse interrupts" or "edge-triggered interrupts"). Set a bit in this bitmask to 0 to convert an interrupt line to operate as "level sensitive" interrupt.} ${LATCHED_IRQ}
-
-  #Adding Group
-  set Debugging [ipgui::add_group $IPINST -name "Debugging" -layout horizontal]
-  set ENABLE_TRACE [ipgui::add_param $IPINST -name "ENABLE_TRACE" -parent ${Debugging}]
-  set_property tooltip {Produce an execution trace using the trace_valid and trace_data output ports.} ${ENABLE_TRACE}
-  set REGS_INIT_ZERO [ipgui::add_param $IPINST -name "REGS_INIT_ZERO" -parent ${Debugging}]
-  set_property tooltip {Select this to initialize all registers to zero (using a Verilog initial block). This can be useful for simulation or formal verification.} ${REGS_INIT_ZERO}
-
+  ipgui::add_param $IPINST -name "ENABLE_COUNTERS"
+  ipgui::add_param $IPINST -name "ENABLE_COUNTERS64"
+  ipgui::add_param $IPINST -name "ENABLE_REGS_16_31"
+  ipgui::add_param $IPINST -name "ENABLE_REGS_DUALPORT"
+  ipgui::add_param $IPINST -name "TWO_STAGE_SHIFT"
+  ipgui::add_param $IPINST -name "BARREL_SHIFTER"
+  ipgui::add_param $IPINST -name "TWO_CYCLE_COMPARE"
+  ipgui::add_param $IPINST -name "TWO_CYCLE_ALU"
+  ipgui::add_param $IPINST -name "COMPRESSED_ISA"
+  ipgui::add_param $IPINST -name "CATCH_MISALIGN"
+  ipgui::add_param $IPINST -name "CATCH_ILLINSN"
+  ipgui::add_param $IPINST -name "ENABLE_PCPI"
+  ipgui::add_param $IPINST -name "ENABLE_MUL"
+  ipgui::add_param $IPINST -name "ENABLE_FAST_MUL"
+  ipgui::add_param $IPINST -name "ENABLE_DIV"
+  ipgui::add_param $IPINST -name "ENABLE_IRQ"
+  ipgui::add_param $IPINST -name "ENABLE_IRQ_QREGS"
+  ipgui::add_param $IPINST -name "ENABLE_IRQ_TIMER"
+  ipgui::add_param $IPINST -name "ENABLE_TRACE"
+  ipgui::add_param $IPINST -name "REGS_INIT_ZERO"
+  ipgui::add_param $IPINST -name "MASKED_IRQ"
+  ipgui::add_param $IPINST -name "LATCHED_IRQ"
+  ipgui::add_param $IPINST -name "PROGADDR_RESET"
+  ipgui::add_param $IPINST -name "PROGADDR_IRQ"
+  ipgui::add_param $IPINST -name "STACKADDR"
 
 }
 
